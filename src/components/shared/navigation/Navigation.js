@@ -1,49 +1,53 @@
 import { NavLink } from 'react-router-dom';
-// import styles from './Navigation.module.css';
+import styles from './Navigation.module.css';
 
 export const Navigation = (props) => {
+    const setNavStyle = ({ isActive }) => {
+        return isActive ? styles['active-link'] : undefined;
+    };
+
     return (
-        <div className="nav-wrapper">
-            <div className="left-side">
-                <div className="nav-link-wrapper">
-                    <NavLink className='' to="/">
+        <div className={styles['nav-wrapper']}>
+            <div className={styles["left-side"]}>
+                <div className={styles["nav-link-wrapper"]}>
+                    <NavLink className={setNavStyle} to="/">
                         Home
                     </NavLink>
                 </div>
 
-                <div className="nav-link-wrapper">
-                    <NavLink className='' to="/recipes/list">
+                <div className={styles["nav-link-wrapper"]}>
+                    <NavLink className={setNavStyle} to="/recipes/list">
                         Recipes
                     </NavLink>
                 </div>
 
-                <div className="nav-link-wrapper">
-                    <NavLink className='' to="/about">
+                <div className={styles["nav-link-wrapper"]}>
+                    <NavLink className={setNavStyle} to="/about">
                         About
                     </NavLink>
                 </div>
 
-                <div className="nav-link-wrapper">
-                    <NavLink className='' to="/contacts">
+                <div className={styles["nav-link-wrapper"]}>
+                    <NavLink className={setNavStyle} to="/contacts">
                         Contacts
                     </NavLink>
                 </div>
             </div>
 
-            <div className="right-side">
-                <div className="nav-link-wrapper">
-                    <NavLink to="/">
+            <div className={styles["right-side"]}>
+                <div className={styles["nav-link-wrapper"]}>
+                    <NavLink className={setNavStyle} to="/">
                         logout
                     </NavLink>
                 </div>
 
-                <div className="nav-link-wrapper">
-                    <NavLink className='' to="/login">
+                <div className={styles["nav-link-wrapper"]}>
+                    <NavLink className={setNavStyle} to="/login">
                         login
                     </NavLink>
                 </div>
-                <div className="nav-link-wrapper">
-                    <NavLink className='' to="/register">
+                <div className={styles["nav-link-wrapper"]}>
+                    <NavLink className={setNavStyle} to="/register">
                         try it free
                     </NavLink>
                 </div>
