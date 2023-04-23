@@ -1,12 +1,51 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-export const RecipeAdd = ({addRecipeHandler}) => {
-    const onSubmit = (e) => {
+export const RecipeAdd = ({ addRecipeHandler }) => {
+    const [errors, setErrors] = useState({});
+    const [values, setValues] = useState({
+        name: '',
+        description: '',
+        timeToCook: '',
+        imageUrl: '',
+    });
+
+    // Handlers
+    const changeHandler = (e) => {
+        console.log(e.target.name);
+        console.log(e.target.value);
+        setValues((state) => ({
+            ...state,
+            [e.target.name]: e.target.value,
+        }));
+    };
+
+    const submitHandler = (e) => {
         e.preventDefault();
 
-        const recipeData = Object.fromEntries(new FormData(e.target));
-        addRecipeHandler(recipeData)
-    }; 
+        const recipeData = values;
+        addRecipeHandler(recipeData);
+
+        console.log(recipeData);
+    };
+
+    // Validators
+    const minLength = (e, limit) => {
+        setErrors((state) => ({
+            ...state,
+            [e.target.name]: values[e.target.name].length < limit,
+        }));
+    };
+
+    const isPositive = (e) => {
+        let number = Number(e.target.value);
+        setErrors((state) => ({
+            ...state,
+            [e.target.name]: number < 0,
+        }));
+    };
+
+    const isFormValid = !Object.values(errors).some((x) => x);
 
     return (
         <>
@@ -21,7 +60,7 @@ export const RecipeAdd = ({addRecipeHandler}) => {
                 <form
                     id="create"
                     className="col-lg-6 offset-lg-3"
-                    onSubmit={onSubmit}
+                    onSubmit={submitHandler}
                 >
                     <div className="form-group">
                         <label htmlFor="name">Recipe name:</label>
@@ -29,7 +68,10 @@ export const RecipeAdd = ({addRecipeHandler}) => {
                             type="text"
                             id="name"
                             name="name"
-                            placeholder="recipe name here..."
+                            placeholder="recipe name"
+                            value={values.name}
+                            onChange={changeHandler}
+                            onBlur={(e) => minLength(e, 3)}
                         />
                     </div>
                     <div className="form-group">
@@ -38,16 +80,23 @@ export const RecipeAdd = ({addRecipeHandler}) => {
                             type="text"
                             id="description"
                             name="description"
-                            placeholder="recipe description here..."
+                            placeholder="recipe description"
+                            value={values.description}
+                            onChange={changeHandler}
+                            onBlur={(e) => minLength(e, 3)}
+
                         />
                     </div>
                     <div className="form-group">
                         <label htmlFor="preparation-time">Time to cook:</label>
                         <input
                             type="text"
-                            id="preparation-time"
-                            name="preparation-time"
-                            placeholder="recipe preparation time here..."
+                            id="tim-to-cook"
+                            name="timeToCook"
+                            placeholder="preparation time"
+                            value={values.timeToCook}
+                            onChange={changeHandler}
+                            onBlur={(e) => minLength(e, 3)}
                         />
                     </div>
                     <div className="form-group">
@@ -56,10 +105,17 @@ export const RecipeAdd = ({addRecipeHandler}) => {
                             type="text"
                             id="imageUrl"
                             name="imageUrl"
-                            placeholder="image link here"
+                            placeholder="image link"
+                            value={values.imageUrl}
+                            onChange={changeHandler}
+                            onBlur={(e) => minLength(e, 3)}
                         />
                     </div>
-                    <input type="submit" value="Add Recipe" />
+                    <input
+                        type="submit"
+                        value="Add Recipe"
+                        disabled={!isFormValid}
+                    />
                     <Link className="view-recipe-btn" to={`/recipes/list`}>
                         Cancel
                     </Link>
