@@ -1,8 +1,21 @@
-body {
-    /* font-size: 20px; */
-    font-family: 'Lato', sans-serif;
-    position: relative;
+@font-face {
+    font-family: Oswald-Regular;
+    src: url(/public/fonts/oswald/Oswald-Regular.ttf);
+}
+@font-face {
+    font-family: Oswald-Medium;
+    src: url(/public/fonts/oswald/Oswald-Medium.ttf);
+}
+@font-face {
+    font-family: Oswald-Bold;
+    src: url(/public/fonts/oswald/Oswald-Bold.ttf);
+}
 
+body,
+html {
+    height: 100%;
+    font-family: Oswald-Regular, sans-serif;
+    position: relative;
     display: flex;
     min-height: 100vh;
     flex-direction: column;
@@ -13,28 +26,6 @@ body {
     display: grid;
     grid-template-columns: 1fr;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-/* .nav-link-wrapper a:hover {
-    color: black;
-} */
-
-
-
-
-
-
-
 
 
 /*Content description text*/
