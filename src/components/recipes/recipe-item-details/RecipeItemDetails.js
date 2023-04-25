@@ -1,10 +1,15 @@
-import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 
+import { RecipeContext } from '../../../contexts/RecipeContext';
+import { useContext } from 'react';
+
 export const RecipeItemDetails = ({ addComment }) => {
-    const [recipe, setRecipe] = useState({});
     const { recipeId } = useParams();
+    const { recipes, deleteRecipeHandler } = useContext(RecipeContext);
+
+    const recipe = recipes.find((x) => x._id == recipeId);
 
     const [comment, setComment] = useState({
         username: 'ivan',
@@ -15,14 +20,6 @@ export const RecipeItemDetails = ({ addComment }) => {
         username: '',
         comment: '',
     });
-
-    useEffect(() => {
-        fetch(`http://localhost:3030/data/recipes/${recipeId}/`)
-            .then((res) => res.json())
-            .then((result) => {
-                setRecipe(result);
-            });
-    }, [recipeId, comment]);
 
     const addCommentHandler = (e) => {
         e.preventDefault();
@@ -69,7 +66,7 @@ export const RecipeItemDetails = ({ addComment }) => {
                 >
                     <div className="recipe-img-box">
                         <img
-                            src={`/${recipe.img}`}
+                            src={`/${recipe.imageUrl}`}
                             className="recipe-img"
                             style={{
                                 width: 250,
@@ -80,7 +77,9 @@ export const RecipeItemDetails = ({ addComment }) => {
                     </div>
                     <div className="recipe-details-box" style={{ padding: 30 }}>
                         <h3>Description: {recipe.ingredients}</h3>
-                        <h3>Time for preparation: minutes</h3>
+                        <h3>
+                            Time for preparation: {recipe.timeToCook} minutes
+                        </h3>
                         <h2>Likes: </h2>
                     </div>
                     <div className="like-btn btn">
@@ -97,7 +96,11 @@ export const RecipeItemDetails = ({ addComment }) => {
                     >
                         Edit
                     </Link>
-                    <Link className="view-recipe-btn" to={`/recipes/list`}>
+                    <Link
+                        className="view-recipe-btn"
+                        to={`/recipes/list`}
+                        onClick={() => deleteRecipeHandler(recipeId)}
+                    >
                         Delete
                     </Link>
                 </div>

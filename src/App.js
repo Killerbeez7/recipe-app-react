@@ -1,10 +1,8 @@
-// const Register = lazy(() => import('./components/auth/register/Register'));
-import { useState, useEffect, lazy, Suspense } from 'react';
+import { RecipeContext } from './contexts/RecipeContext';
 import { Routes, Route } from 'react-router-dom';
-
-// services
-import * as recipeService from './services/recipeService';
-
+// Custom hooks
+import useFetch from './hooks/useFetch';
+import useRecipesApi from './hooks/useRecipesApi';
 // Base components
 import { Navigation } from './components/shared/navigation/Navigation';
 import { Home } from './components/home/Home';
@@ -12,11 +10,9 @@ import { About } from './components/about/About';
 import { Contacts } from './components/contacts/Contacts';
 import { Footer } from './components/shared/footer/Footer';
 import { NotFound } from './components/not-found/NotFound';
-
 // Auth components
 import { Login } from './components/auth/login/Login';
 import { Register } from './components/auth/register/Register';
-
 // Recipe components
 import { RecipeList } from './components/recipes/recipe-list/RecipeList';
 import { RecipeAdd } from './components/recipes/recipe-add/RecipeAdd';
@@ -25,7 +21,31 @@ import { RecipeItemDetails } from './components/recipes/recipe-item-details/Reci
 import './App.css';
 
 function App() {
-    const [recipes, setRecipes] = useState([]);
+    const [recipes, setRecipes, isLoading] = useFetch(
+        'http://localhost:3030/jsonstore/recipes',
+        []
+    );
+    const { addRecipe, editRecipe, deleteRecipe } = useRecipesApi();
+
+    // Add recipe
+    const addRecipeHandler = async (newRecipe) => {
+        await addRecipe(newRecipe);
+        setRecipes((state) => [...state, newRecipe]);
+    };
+
+    // Edit recipe
+    const editRecipeHandler = async (recipeId, recipeData) => {
+        await editRecipe(recipeId, recipeData);
+        setRecipes((state) =>
+            state.map((x) => (x._id == recipeId ? { ...(x = recipeData) } : x))
+        );
+    };
+
+    // Delete recipe
+    const deleteRecipeHandler = async (recipeId) => {
+        await deleteRecipe(recipeId);
+        setRecipes((state) => state.filter((x) => x._id != recipeId));
+    };
 
     const addComment = (recipeId, comment) => {
         setRecipes((state) => {
@@ -41,57 +61,47 @@ function App() {
         });
     };
 
-    const addRecipeHandler = (gameData) => {
-        debugger;
-        setRecipes((state) => [...state, gameData]);
-    };
-
-    useEffect(() => {
-        recipeService.getAll().then((result) => {
-            setRecipes(result);
-        });
-    }, []);
     return (
-        <div className="body">
-            <Navigation />
+        <RecipeContext.Provider
+            value={{
+                recipes,
+                addRecipeHandler,
+                editRecipeHandler,
+                deleteRecipeHandler,
+            }}
+        >
+            <div className="body">
+                <Navigation />
 
-            <Routes>
-                <Route path="/" element={<Home recipes={recipes} />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/contacts" element={<Contacts />} />
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/about" element={<About />} />
+                    <Route path="/contacts" element={<Contacts />} />
 
-                <Route path="/login" element={<Login />} />
-                <Route
-                    path="/register"
-                    element={
-                        <Suspense fallback={<span>Loading...</span>}>
-                            <Register />
-                        </Suspense>
-                    }
-                />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
 
-                <Route
-                    path="/recipes/list"
-                    element={<RecipeList recipes={recipes} />}
-                />
-                <Route
-                    path="/recipes/add"
-                    element={<RecipeAdd addRecipeHandler={addRecipeHandler} />}
-                />
-                <Route
-                    path="/recipes/edit/:recipeId"
-                    element={<RecipeEdit />}
-                />
-                <Route
-                    path="/recipes/details/:recipeId"
-                    element={<RecipeItemDetails addComment={addComment} />}
-                />
+                    <Route
+                        path="/recipes/list"
+                        element={<RecipeList recipes={recipes} />}
+                    />
 
-                <Route path="/*" element={<NotFound />} />
-            </Routes>
+                    <Route path="/recipes/add" element={<RecipeAdd />} />
+                    <Route
+                        path="/recipes/edit/:recipeId"
+                        element={<RecipeEdit />}
+                    />
+                    <Route
+                        path="/recipes/details/:recipeId"
+                        element={<RecipeItemDetails addComment={addComment} />}
+                    />
 
-            <Footer />
-        </div>
+                    <Route path="/*" element={<NotFound />} />
+                </Routes>
+
+                <Footer />
+            </div>
+        </RecipeContext.Provider>
     );
 }
 

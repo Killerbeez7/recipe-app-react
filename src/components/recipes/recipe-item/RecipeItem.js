@@ -11,17 +11,21 @@ export const RecipeItem = ({ recipe }) => {
                     marginBottom: 10,
                 }}
             >
-                Time to cook: ...
+                Time to cook: {recipe.timeToCook} min
             </h3>
             <li
                 className="recipe-list-item-wrapper"
-                style={{ height: 170, maxWidth: 700 }}
+                style={{ maxHeight: 200, maxWidth: 750 }}
             >
-                <div className="recipe-image-wrapper">
+                <div
+                    className="recipe-image-wrapper"
+                    style={{ maxHeight: 150, maxWidth: 150 }}
+                >
                     <img
-                        src={`/${recipe.img}`}
+                        alt=""
+                        src={`/${recipe.imageUrl}`}
                         className="recipe-img"
-                        style={{ height: 125, width: 125 }}
+                        style={{ maxHeight: 150, maxWidth: 150 }}
                     />
                 </div>
                 <div className="recipe-content-wrapper">
@@ -29,9 +33,11 @@ export const RecipeItem = ({ recipe }) => {
                         <h3>{recipe.name}</h3>
                     </div>
                     <div className="recipe-description-wrapper">
-                        <h3>Ingredients: {recipe.ingredients}</h3>
+                        <h3>{recipe.description}</h3>
                     </div>
-                    <br></br>
+                    <div className="recipe-description-wrapper">
+                        <h3>{recipe.ingredients}</h3>
+                    </div>
                     <div className="recipe-description-wrapper">
                         <h4>Steps: {recipe.steps}</h4>
                     </div>
@@ -39,7 +45,6 @@ export const RecipeItem = ({ recipe }) => {
                 <Link
                     to={`/recipes/details/${recipe._id}`}
                     className="view-recipe-btn"
-                    recipe={recipe}
                 >
                     view
                 </Link>

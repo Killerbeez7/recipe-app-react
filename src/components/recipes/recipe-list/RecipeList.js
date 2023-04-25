@@ -1,9 +1,8 @@
 import { Link } from 'react-router-dom';
 import { RecipeItem } from '../recipe-item/RecipeItem';
 
-
-export const RecipeList = ({recipes}) => {
-
+export const RecipeList = ({ recipes }) => {
+    console.log("render");
     return (
         <>
             <form style={{ marginLeft: '3%' }}>

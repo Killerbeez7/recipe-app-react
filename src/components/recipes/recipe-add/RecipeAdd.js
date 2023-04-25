@@ -1,7 +1,10 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
-export const RecipeAdd = ({ addRecipeHandler }) => {
+import { RecipeContext } from '../../../contexts/RecipeContext';
+import { useContext } from 'react';
+
+export const RecipeAdd = () => {
     const [errors, setErrors] = useState({});
     const [values, setValues] = useState({
         name: '',
@@ -10,10 +13,12 @@ export const RecipeAdd = ({ addRecipeHandler }) => {
         imageUrl: '',
     });
 
+    const navigate = useNavigate();
+
     // Handlers
+    const { addRecipeHandler } = useContext(RecipeContext);
+
     const changeHandler = (e) => {
-        console.log(e.target.name);
-        console.log(e.target.value);
         setValues((state) => ({
             ...state,
             [e.target.name]: e.target.value,
@@ -22,11 +27,15 @@ export const RecipeAdd = ({ addRecipeHandler }) => {
 
     const submitHandler = (e) => {
         e.preventDefault();
-
-        const recipeData = values;
-        addRecipeHandler(recipeData);
-
-        console.log(recipeData);
+        const newRecipe = values;
+        addRecipeHandler(newRecipe);
+        setValues({
+            name: '',
+            description: '',
+            timeToCook: '',
+            imageUrl: '',
+        });
+        navigate(`/recipes/list`);
     };
 
     // Validators
@@ -37,13 +46,13 @@ export const RecipeAdd = ({ addRecipeHandler }) => {
         }));
     };
 
-    const isPositive = (e) => {
-        let number = Number(e.target.value);
-        setErrors((state) => ({
-            ...state,
-            [e.target.name]: number < 0,
-        }));
-    };
+    // const isPositive = (e) => {
+    //     let number = Number(e.target.value);
+    //     setErrors((state) => ({
+    //         ...state,
+    //         [e.target.name]: number < 0,
+    //     }));
+    // };
 
     const isFormValid = !Object.values(errors).some((x) => x);
 
@@ -84,7 +93,6 @@ export const RecipeAdd = ({ addRecipeHandler }) => {
                             value={values.description}
                             onChange={changeHandler}
                             onBlur={(e) => minLength(e, 3)}
-
                         />
                     </div>
                     <div className="form-group">
