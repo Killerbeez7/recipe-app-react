@@ -45,7 +45,7 @@ export const Navigation = (props) => {
                             <NavLink to="/">{user.email}</NavLink>
                         </div>
                         <div className={styles['nav-link-wrapper']}>
-                            <NavLink to="/">logout</NavLink>
+                            <NavLink to="/logout">logout</NavLink>
                         </div>
                     </>
                 ) : (

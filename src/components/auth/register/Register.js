@@ -1,17 +1,51 @@
+import { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+import { AuthContext } from '../../../contexts/AuthContext';
+import * as authService from '../../../services/authService';
+
 export const Register = () => {
+    const { userLogin } = useContext(AuthContext);
+    const navigate = useNavigate();
+
+    const onSubmit = (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(e.target)
+        
+        const email = formData.get('email')
+        const password = formData.get('password')
+        const confirmPassword = formData.get('confirm-password')
+
+        if(password !== confirmPassword) {
+            return
+        }
+
+        authService.register(email, password)
+            .then((authData) => {
+                userLogin(authData);
+                navigate('/')
+            })
+            .catch(() => {
+                navigate('/not-found');
+            });
+    };
+
+
+
     return (
         <div className="register-form-wraper">
             <h1>Sign Up</h1>
-            <form>
+            <form onSubmit={onSubmit}>
                 <div>
-                    <label htmlFor="username">Username:</label>
+                    <label htmlFor="email-sign-up">Email:</label>
                     <input
-                        name="username"
-                        id="username"
+                        name="email"
+                        id="email-sign-up"
                         type="text"
+
                     />
                 </div>
-
                 <div>
                     <label htmlFor="password-sign-up">Password:</label>
                     <input
@@ -22,35 +56,13 @@ export const Register = () => {
                     />
                 </div>
                 <div>
-                    <label htmlFor="email-sign-up">Email:</label>
+                    <label htmlFor="confirm-password-sign-up">Confirm Password:</label>
                     <input
-                        name="email"
-                        id="email-sign-up"
-                        type="text"
+                        name="confirm-password"
+                        id="confirm-password-sign-up"
+                        type="password"
 
                     />
-                </div>
-
-                <div>
-                    <label htmlFor="age">Age:</label>
-                    <input
-                        name="age"
-                        id="age"
-                        type="number"
-
-                    />
-                </div>
-
-                <div>
-                    <label htmlFor="gender">Gender: </label>
-                    <select
-                        name="gender"
-                        id="gender"
-
-                    >
-                        <option value="m">Male</option>
-                        <option value="f">Female</option>
-                    </select>
                 </div>
 
                 <div>

@@ -12,8 +12,9 @@ import { Contacts } from './components/contacts/Contacts';
 import { Footer } from './components/shared/footer/Footer';
 import { NotFound } from './components/not-found/NotFound';
 // Auth components
-import { Login } from './components/auth/login/Login';
 import { Register } from './components/auth/register/Register';
+import { Login } from './components/auth/login/Login';
+import { Logout } from './components/auth/logout/Logout';
 // Recipe components
 import { RecipeList } from './components/recipes/recipe-list/RecipeList';
 import { RecipeAdd } from './components/recipes/recipe-add/RecipeAdd';
@@ -30,11 +31,16 @@ function App() {
     );
     const { addRecipe, editRecipe, deleteRecipe } = useRecipesApi();
 
-    // handlers
+    // Auth handlers
     const userLogin = (authData) => {
         setAuth(authData);
     };
 
+    const userLogout = () => {
+        setAuth({});
+    };
+
+    // Recipe handlers
     const addRecipeHandler = async (newRecipe) => {
         await addRecipe(newRecipe);
         setRecipes((state) => [...state, newRecipe]);
@@ -67,7 +73,7 @@ function App() {
     };
 
     return (
-        <AuthContext.Provider value={{ user: auth, userLogin }}>
+        <AuthContext.Provider value={{ user: auth, userLogin, userLogout }}>
             <RecipeContext.Provider
                 value={{
                     recipes,
@@ -84,8 +90,9 @@ function App() {
                         <Route path="/about" element={<About />} />
                         <Route path="/contacts" element={<Contacts />} />
 
-                        <Route path="/login" element={<Login />} />
                         <Route path="/register" element={<Register />} />
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/logout" element={<Logout />} />
 
                         <Route
                             path="/recipes/list"
