@@ -1,3 +1,4 @@
+import { AuthContext } from './contexts/AuthContext';
 import { RecipeContext } from './contexts/RecipeContext';
 import { Routes, Route } from 'react-router-dom';
 // Custom hooks
@@ -19,21 +20,26 @@ import { RecipeAdd } from './components/recipes/recipe-add/RecipeAdd';
 import { RecipeEdit } from './components/recipes/recipe-edit/RecipeEdit';
 import { RecipeItemDetails } from './components/recipes/recipe-item-details/RecipeItemDetails';
 import './App.css';
+import { useState } from 'react';
 
 function App() {
+    const [auth, setAuth] = useState({});
     const [recipes, setRecipes, isLoading] = useFetch(
         'http://localhost:3030/jsonstore/recipes',
         []
     );
     const { addRecipe, editRecipe, deleteRecipe } = useRecipesApi();
 
-    // Add recipe
+    // handlers
+    const userLogin = (authData) => {
+        setAuth(authData);
+    };
+
     const addRecipeHandler = async (newRecipe) => {
         await addRecipe(newRecipe);
         setRecipes((state) => [...state, newRecipe]);
     };
 
-    // Edit recipe
     const editRecipeHandler = async (recipeId, recipeData) => {
         await editRecipe(recipeId, recipeData);
         setRecipes((state) =>
@@ -41,7 +47,6 @@ function App() {
         );
     };
 
-    // Delete recipe
     const deleteRecipeHandler = async (recipeId) => {
         await deleteRecipe(recipeId);
         setRecipes((state) => state.filter((x) => x._id != recipeId));
@@ -62,46 +67,50 @@ function App() {
     };
 
     return (
-        <RecipeContext.Provider
-            value={{
-                recipes,
-                addRecipeHandler,
-                editRecipeHandler,
-                deleteRecipeHandler,
-            }}
-        >
-            <div className="body">
-                <Navigation />
+        <AuthContext.Provider value={{ user: auth, userLogin }}>
+            <RecipeContext.Provider
+                value={{
+                    recipes,
+                    addRecipeHandler,
+                    editRecipeHandler,
+                    deleteRecipeHandler,
+                }}
+            >
+                <div className="body">
+                    <Navigation />
 
-                <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/about" element={<About />} />
-                    <Route path="/contacts" element={<Contacts />} />
+                    <Routes>
+                        <Route path="/" element={<Home />} />
+                        <Route path="/about" element={<About />} />
+                        <Route path="/contacts" element={<Contacts />} />
 
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/register" element={<Register />} />
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/register" element={<Register />} />
 
-                    <Route
-                        path="/recipes/list"
-                        element={<RecipeList recipes={recipes} />}
-                    />
+                        <Route
+                            path="/recipes/list"
+                            element={<RecipeList recipes={recipes} />}
+                        />
 
-                    <Route path="/recipes/add" element={<RecipeAdd />} />
-                    <Route
-                        path="/recipes/edit/:recipeId"
-                        element={<RecipeEdit />}
-                    />
-                    <Route
-                        path="/recipes/details/:recipeId"
-                        element={<RecipeItemDetails addComment={addComment} />}
-                    />
+                        <Route path="/recipes/add" element={<RecipeAdd />} />
+                        <Route
+                            path="/recipes/edit/:recipeId"
+                            element={<RecipeEdit />}
+                        />
+                        <Route
+                            path="/recipes/details/:recipeId"
+                            element={
+                                <RecipeItemDetails addComment={addComment} />
+                            }
+                        />
 
-                    <Route path="/*" element={<NotFound />} />
-                </Routes>
+                        <Route path="/*" element={<NotFound />} />
+                    </Routes>
 
-                <Footer />
-            </div>
-        </RecipeContext.Provider>
+                    <Footer />
+                </div>
+            </RecipeContext.Provider>
+        </AuthContext.Provider>
     );
 }
 

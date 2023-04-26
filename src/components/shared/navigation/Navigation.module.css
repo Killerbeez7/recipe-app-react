@@ -12,7 +12,7 @@
 
 .nav-wrapper > .left-side > div {
     margin-right: 9%;
-    font-size: 1.1em;
+    font-size: 1.6em;
     text-transform: uppercase;
 }
 
@@ -24,19 +24,20 @@
 
 .nav-wrapper > .right-side > div {
     margin-left: 20px;
-    font-size: 1.1em;
+    font-size: 1.6em;
     text-transform: uppercase;
 }
 
 /*Nav link styles*/
 
 .nav-link-wrapper {
-    height: 24px;
+    height: 2.4rem;
     border-bottom: 1px solid transparent;
     transition: border-bottom 0.5s;
 }
 
 .nav-link-wrapper a {
+    
     color: #8a8a8a;
     text-decoration: none;
     transition: color 0.5s;
@@ -50,4 +51,3 @@
     font-weight: bold;
     color: black;
 }
- 

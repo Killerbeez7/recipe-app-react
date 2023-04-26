@@ -42,6 +42,7 @@ export const RecipeItem = ({ recipe }) => {
                         <h4>Steps: {recipe.steps}</h4>
                     </div>
                 </div>
+
                 <Link
                     to={`/recipes/details/${recipe._id}`}
                     className="view-recipe-btn"

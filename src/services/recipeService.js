@@ -1,12 +1,9 @@
+import * as request from "./requester";
+
 const baseUrl = 'http://localhost:3030';
 
 // Get data
-
-export const getAll = () => {
-    return fetch(`${baseUrl}/jsonstore/recipes`)
-        .then((res) => res.json())
-        .catch((err) => console.log(err));
-};
+export const getAll = () => request.get(`${baseUrl}/jsonstore/recipes`);
 
 export const getOne = async (recipeId) => {
     const response = await fetch(`${baseUrl}/jsonstore/recipes/${recipeId}`);
